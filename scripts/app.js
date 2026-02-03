@@ -18,6 +18,7 @@ let pokeSpan;
 let favoritePokemon = "Pikachu";
 let data;
 let locations;
+let currentPokemon = "Pikachu";
 let isShiny = false;
 let startShiny = false;
 let isFavorited = false;
@@ -42,7 +43,8 @@ function capitalize(pokemon) {
 
 async function updatePokemon() {
     await GetAPI();
-    favoritePokemon = capitalize(userInput.value);
+
+    currentPokemon = capitalize(userInput.value);
     if (favoritePokemonList.includes(favoritePokemon)) {
         FavoriteBtn.src = "/assets/star filled.png";
         isFavorited = true;
@@ -123,68 +125,62 @@ async function GetLocations() {
 
 //---------------favorites setup start --------------------//
 function getLocalStorage() {
-    favoritePokemon = localStorage.getItem("Favorite Pokemon")
-    if (favoritePokemon === null) { return []; }
+    favoritePokemon = localStorage.getItem("Favorite Pokemon");
+
+    if (favoritePokemon === null) { return [] };
     return JSON.parse(favoritePokemon);
 }
 
-
-function saveToStorage() {
-    favoritePokemonList = getLocalStorage();
+function saveToStorage(favoritePokemon) {
+    let favoritePokemonList = getLocalStorage();
     if (!favoritePokemonList.includes(favoritePokemon)) {
         favoritePokemonList.push(favoritePokemon);
     }
+    localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList))
+}
+
+const removeFromStorage = (favoritePokemon) => {
+    let favoritePokemonList = getLocalStorage();
+    let groceryIndex = favoritePokemonList.indexOf(favoritePokemon);
+    favoritePokemonList.splice(groceryIndex, 1);
+
     localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList));
 }
 
+function DisplayList() {
 
-function removeFromStorage(favoritePokemon) {
-    favoritePokemonList = getLocalStorage();
-    let pokemonIndex = favoritePokemonList.indexOf(favoritePokemon);
-    favoritePokemonList.splice(pokemonIndex, 1);
-    localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList));
-}
-
-
-function DisplayFavorites() {
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
+    console.log(favoritePokemonList);
     favoritePokemonList.forEach(favoritePokemon => {
-        pokeSpan = document.createElement("span");
-        pokeSpan.className = `px-2`;
-        pokeSpan.textContent = favoritePokemon;
+        console.log(favoritePokemon);
+        let favSpan = document.createElement("span");
+        favSpan.className = "px-5";
 
+        favSpan.textContent = favoritePokemon;
 
         const deleteBtn = document.createElement("span");
         deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${favoritePokemon}">`;
+        deleteBtn.classList = "px-2";
         deleteBtn.addEventListener("click", () => {
             removeFromStorage(favoritePokemon);
             FavoriteBtn.src = "/assets/star.png";
             isFavorited = !isFavorited;
-            pokeSpan.remove();
+            favSpan.remove();
         })
-        pokeSpan.appendChild(deleteBtn);
-        FavoritesBox.appendChild(pokeSpan);
+        favSpan.appendChild(deleteBtn);
+        FavoritesBox.appendChild(favSpan);
+
     });
 }
 
-
 FavoriteBtn.addEventListener("click", () => {
-    if (!isFavorited) {
-        FavoriteBtn.src = "/assets/star filled.png";
-        console.log("this works")
-        if (favoritePokemon != null) { favoritePokemon = favoritePokemon; }
-        else { favoritePokemon = "Pikachu" }
-        getLocalStorage();
-        saveToStorage(favoritePokemon);
-        DisplayFavorites();
-    }
-    else {
-        FavoriteBtn.src = "/assets/star.png";
-        removeFromStorage(favoritePokemon);
-        pokeSpan.remove(favoritePokemon);
-    }
-    isFavorited = !isFavorited;
+    let favoritePokemon = currentPokemon;
+    getLocalStorage();
+    saveToStorage(favoritePokemon);
+    DisplayList();
+    userInput.value = "";
+
 })
 //---------------favorites setup end --------------------//
 
