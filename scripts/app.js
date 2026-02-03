@@ -15,24 +15,22 @@ const FavoritesBox = document.getElementById("favoritesBox");
 
 
 let pokeSpan;
-let favoritePokemon = "Pikachu";
+let searchingFromFavorites = false;
+let favoritePokemon = "pikachu";
 let data;
 let locations;
-let currentPokemon = "Pikachu";
+let currentPokemon = "pikachu";
 let isShiny = false;
 let startShiny = false;
 let isFavorited = false;
 favoritePokemonList = [];
-async function GetAPI() {
-    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${userInput.value}`)
+async function GetAPI(currentPokemon) {
+    if (!searchingFromFavorites)
+    {currentPokemon = userInput.value;}
+    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${currentPokemon}`)
     data = await response.json();
     console.log(data);
 }
-
-
-
-
-
 
 function capitalize(pokemon) {
     return String(pokemon).charAt(0).toUpperCase() + String(pokemon).slice(1);
@@ -42,9 +40,10 @@ function capitalize(pokemon) {
 
 
 async function updatePokemon() {
-    await GetAPI();
 
-    currentPokemon = capitalize(userInput.value);
+    if (!searchingFromFavorites) { currentPokemon = userInput.value;}
+    else { currentPokemon = favoritePokemon;}
+    await GetAPI(currentPokemon);
     if (favoritePokemonList.includes(favoritePokemon)) {
         FavoriteBtn.src = "/assets/star filled.png";
         isFavorited = true;
@@ -57,8 +56,9 @@ async function updatePokemon() {
     //abilities update
     Abilities.textContent = "";
     let abilitiesList = [];
+    console.log(data.abilities);
     for (let i = 0; i < data.abilities.length; i++) {
-        abilitiesList.push(data.abilities[i].ability.name);
+    abilitiesList.push(data.abilities[i].ability.name);
     }
     abilitiesList = abilitiesList.join(", ");
     Abilities.textContent = abilitiesList;
@@ -84,9 +84,6 @@ async function updatePokemon() {
     }
     typesList = typesList.join(" + ");
     Type.textContent = capitalize(typesList);
-
-
-
 
     //moves update
     let movesList = [];
@@ -151,17 +148,20 @@ function DisplayList() {
 
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
-    console.log(favoritePokemonList);
-    favoritePokemonList.forEach(favoritePokemon => {
-        console.log(favoritePokemon);
+    console.log(`favoritePokemonList: ${favoritePokemonList}`);
+    for (let i = 0; i < favoritePokemonList.length; i++) {
         let favSpan = document.createElement("span");
-        favSpan.className = "px-5";
-
-        favSpan.textContent = favoritePokemon;
-
+        favSpan.className = "px-1";
+        favSpan.textContent = favoritePokemonList[i];
+        favSpan.addEventListener("click", () => {
+            searchingFromFavorites = true;
+            console.log(favoritePokemonList[i]);
+            GetAPI(favoritePokemonList[i]);
+            updatePokemon();
+        })
         const deleteBtn = document.createElement("span");
         deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${favoritePokemon}">`;
-        deleteBtn.classList = "px-2";
+        deleteBtn.classList = "px-1";
         deleteBtn.addEventListener("click", () => {
             removeFromStorage(favoritePokemon);
             FavoriteBtn.src = "/assets/star.png";
@@ -170,44 +170,44 @@ function DisplayList() {
         })
         favSpan.appendChild(deleteBtn);
         FavoritesBox.appendChild(favSpan);
-
-    });
+        // })
+    };
 }
 
-FavoriteBtn.addEventListener("click", () => {
-    let favoritePokemon = currentPokemon;
-    getLocalStorage();
-    saveToStorage(favoritePokemon);
-    DisplayList();
-    userInput.value = "";
+    FavoriteBtn.addEventListener("click", () => {
+        let favoritePokemon = currentPokemon;
+        getLocalStorage();
+        saveToStorage(favoritePokemon);
+        DisplayList();
+        userInput.value = "";
 
-})
-//---------------favorites setup end --------------------//
-
-
+    })
+    //---------------favorites setup end --------------------//
 
 
-userInput.addEventListener("keypress", (event) => {
-    if (event.key === "Enter") {
+
+
+    userInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+        searchingFromFavorites = false;
+            updatePokemon();
+        }
+    })
+    EnterBtn.addEventListener("click", () => {
         updatePokemon();
-    }
-})
-EnterBtn.addEventListener("click", () => {
-    updatePokemon();
+        searchingFromFavorites = false;
+    })
 
 
-})
-
-
-ShinyBtn.addEventListener("click", () => {
-    if (!(startShiny == null)) {
-        if (!startShiny) { MainImg.src = "/assets/pikachushiny.png"; }
-        else if (startShiny) { MainImg.src = "/assets/pikachu.png"; }
-        startShiny = !startShiny;
-    }
-    else {
-        if (isShiny) { MainImg.src = data.sprites.other["official-artwork"].front_default; }
-        else { MainImg.src = data.sprites.other["official-artwork"].front_shiny; }
-        isShiny = !isShiny;
-    }
-})
+    ShinyBtn.addEventListener("click", () => {
+        if (!(startShiny == null)) {
+            if (!startShiny) { MainImg.src = "/assets/pikachushiny.png"; }
+            else if (startShiny) { MainImg.src = "/assets/pikachu.png"; }
+            startShiny = !startShiny;
+        }
+        else {
+            if (isShiny) { MainImg.src = data.sprites.other["official-artwork"].front_default; }
+            else { MainImg.src = data.sprites.other["official-artwork"].front_shiny; }
+            isShiny = !isShiny;
+        }
+    })
