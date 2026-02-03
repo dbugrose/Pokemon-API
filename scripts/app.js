@@ -1,3 +1,4 @@
+//-------------------get elements--------------------------//
 const userInput = document.getElementById("userInput");
 const EnterBtn = document.getElementById("EnterBtn");
 const FavoriteBtn = document.getElementById("favoriteBtn");
@@ -13,6 +14,7 @@ const PokemonName = document.getElementById("pokemonName");
 const PokedexNumber = document.getElementById("pokedexNumber");
 const FavoritesBox = document.getElementById("favoritesBox");
 
+//-------------------declare variables--------------------------//
 
 let pokeSpan;
 let searchingFromFavorites = false;
@@ -26,6 +28,8 @@ let isFavorited = false;
 favoritePokemonList = [];
 let favSpan;
 
+//-------------------fetch function start --------------------------//
+
 async function GetAPI(pokemon) {
     if (!searchingFromFavorites)
          { pokemon = userInput.value; 
@@ -34,13 +38,17 @@ async function GetAPI(pokemon) {
     data = await response.json();
     console.log(data);
 }
+//-------------------fetch function end--------------------------//
+
+//-------------------capitalize function start--------------------------//
 
 function capitalize(pokemon) {
     return String(pokemon).charAt(0).toUpperCase() + String(pokemon).slice(1);
 }
+//-------------------capitalize function end--------------------------//
 
 
-
+//-------------------update Pokemon function start--------------------------//
 
 async function updatePokemon(pokemon) {
 
@@ -113,8 +121,9 @@ async function updatePokemon(pokemon) {
     userInput.value = "";
 }
 
+//-------------------update Pokemon function end--------------------------//
 
-//get locations function
+//-------------------get locations function start--------------------------//
 async function GetLocations() {
     response = await fetch(`${data.location_area_encounters}`)
     locations = await response.json();
@@ -124,12 +133,14 @@ async function GetLocations() {
         Locations.textContent = "N/A";
     }
     else {
-        for (let i = 0; i < locations.length; i++) { locationsList.push(locations[i].location_area.name); }
+        for (let i = 0; i < locations.length; i++) 
+        { locationsList.push(locations[i].location_area.name); }
         locationsList = locationsList.join(", ");
         Locations.textContent = locationsList;
     }
 }
 
+//-------------------get locations function end--------------------------//
 
 //---------------favorites setup start --------------------//
 function getLocalStorage() {
@@ -201,7 +212,9 @@ FavoriteBtn.addEventListener("click", () => {
     }
     isFavorited = !isFavorited;
 })
-//---------------favorites setup end --------------------//
+//-------------------favorites setup end--------------------------//
+
+//-------------------event listeners  start--------------------------//
 
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
@@ -233,3 +246,5 @@ ShinyBtn.addEventListener("click", () => {
         isShiny = !isShiny;
     }
 })
+
+//-------------------event listeners end--------------------------//
