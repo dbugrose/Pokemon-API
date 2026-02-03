@@ -19,15 +19,16 @@ let searchingFromFavorites = false;
 let favoritePokemon = "pikachu";
 let data;
 let locations;
-let currentPokemon = "pikachu";
+let pokemon = "pikachu";
 let isShiny = false;
 let startShiny = false;
 let isFavorited = false;
 favoritePokemonList = [];
-async function GetAPI(currentPokemon) {
-    if (!searchingFromFavorites)
-    {currentPokemon = userInput.value;}
-    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${currentPokemon}`)
+let favSpan;
+
+async function GetAPI(pokemon) {
+    if (!searchingFromFavorites) { pokemon = userInput.value; }
+    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     data = await response.json();
     console.log(data);
 }
@@ -39,11 +40,10 @@ function capitalize(pokemon) {
 
 
 
-async function updatePokemon() {
+async function updatePokemon(pokemon) {
 
-    if (!searchingFromFavorites) { currentPokemon = userInput.value;}
-    else { currentPokemon = favoritePokemon;}
-    await GetAPI(currentPokemon);
+    if (!searchingFromFavorites) { pokemon = userInput.value; }
+    await GetAPI(pokemon);
     if (favoritePokemonList.includes(favoritePokemon)) {
         FavoriteBtn.src = "/assets/star filled.png";
         isFavorited = true;
@@ -58,7 +58,7 @@ async function updatePokemon() {
     let abilitiesList = [];
     console.log(data.abilities);
     for (let i = 0; i < data.abilities.length; i++) {
-    abilitiesList.push(data.abilities[i].ability.name);
+        abilitiesList.push(data.abilities[i].ability.name);
     }
     abilitiesList = abilitiesList.join(", ");
     Abilities.textContent = abilitiesList;
@@ -149,16 +149,15 @@ function DisplayList() {
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
     console.log(`favoritePokemonList: ${favoritePokemonList}`);
-    for (let i = 0; i < favoritePokemonList.length; i++) {
-        let favSpan = document.createElement("span");
+    favoritePokemonList.forEach((pokemon) => {
+        favSpan = document.createElement("span");
         favSpan.className = "px-1";
-        favSpan.textContent = favoritePokemonList[i];
+        favSpan.textContent = pokemon;
         favSpan.addEventListener("click", () => {
             searchingFromFavorites = true;
-            console.log(favoritePokemonList[i]);
-            GetAPI(favoritePokemonList[i]);
-            updatePokemon();
-        })
+            console.log(pokemon);
+            GetAPI(favSpan.textContent);
+            updatePokemon(pokemon);})
         const deleteBtn = document.createElement("span");
         deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${favoritePokemon}">`;
         deleteBtn.classList = "px-1";
@@ -170,44 +169,44 @@ function DisplayList() {
         })
         favSpan.appendChild(deleteBtn);
         FavoritesBox.appendChild(favSpan);
-        // })
-    };
+    })
 }
 
-    FavoriteBtn.addEventListener("click", () => {
-        let favoritePokemon = currentPokemon;
-        getLocalStorage();
-        saveToStorage(favoritePokemon);
-        DisplayList();
-        userInput.value = "";
 
-    })
-    //---------------favorites setup end --------------------//
+FavoriteBtn.addEventListener("click", () => {
+    let favoritePokemon = pokemon;
+    getLocalStorage();
+    saveToStorage(favoritePokemon);
+    DisplayList();
+    userInput.value = "";
+
+})
+//---------------favorites setup end --------------------//
 
 
 
 
-    userInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
+userInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
         searchingFromFavorites = false;
-            updatePokemon();
-        }
-    })
-    EnterBtn.addEventListener("click", () => {
-        updatePokemon();
-        searchingFromFavorites = false;
-    })
+        updatePokemon(pokemon);
+    }
+})
+EnterBtn.addEventListener("click", () => {
+    updatePokemon(pokemon);
+    searchingFromFavorites = false;
+})
 
 
-    ShinyBtn.addEventListener("click", () => {
-        if (!(startShiny == null)) {
-            if (!startShiny) { MainImg.src = "/assets/pikachushiny.png"; }
-            else if (startShiny) { MainImg.src = "/assets/pikachu.png"; }
-            startShiny = !startShiny;
-        }
-        else {
-            if (isShiny) { MainImg.src = data.sprites.other["official-artwork"].front_default; }
-            else { MainImg.src = data.sprites.other["official-artwork"].front_shiny; }
-            isShiny = !isShiny;
-        }
-    })
+ShinyBtn.addEventListener("click", () => {
+    if (!(startShiny == null)) {
+        if (!startShiny) { MainImg.src = "/assets/pikachushiny.png"; }
+        else if (startShiny) { MainImg.src = "/assets/pikachu.png"; }
+        startShiny = !startShiny;
+    }
+    else {
+        if (isShiny) { MainImg.src = data.sprites.other["official-artwork"].front_default; }
+        else { MainImg.src = data.sprites.other["official-artwork"].front_shiny; }
+        isShiny = !isShiny;
+    }
+})
