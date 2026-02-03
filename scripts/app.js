@@ -27,7 +27,9 @@ favoritePokemonList = [];
 let favSpan;
 
 async function GetAPI(pokemon) {
-    if (!searchingFromFavorites) { pokemon = userInput.value; }
+    if (!searchingFromFavorites)
+         { pokemon = userInput.value; 
+        currentpokemon = userInput.value}
     response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     data = await response.json();
     console.log(data);
@@ -63,6 +65,15 @@ async function updatePokemon(pokemon) {
     abilitiesList = abilitiesList.join(", ");
     Abilities.textContent = abilitiesList;
 
+    //favorites update
+    if (favoritePokemonList.includes(userInput.value))
+    {isFavorited = true;
+    FavoriteBtn.src = "/assets/star filled.png";
+    }
+    else
+    {isFavorited = false;
+    FavoriteBtn.src = "/assets/star.png";
+    }
 
     //name update
     PokemonName.textContent = capitalize(data.name);
@@ -138,8 +149,8 @@ function saveToStorage(favoritePokemon) {
 
 const removeFromStorage = (favoritePokemon) => {
     let favoritePokemonList = getLocalStorage();
-    let groceryIndex = favoritePokemonList.indexOf(favoritePokemon);
-    favoritePokemonList.splice(groceryIndex, 1);
+    let pokemonIndex = favoritePokemonList.indexOf(favoritePokemon);
+    favoritePokemonList.splice(pokemonIndex, 1);
 
     localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList));
 }
@@ -174,27 +185,39 @@ function DisplayList() {
 
 
 FavoriteBtn.addEventListener("click", () => {
+    if (!isFavorited)
+    {
     let favoritePokemon = pokemon;
     getLocalStorage();
     saveToStorage(favoritePokemon);
     DisplayList();
-    userInput.value = "";
-
+    FavoriteBtn.src = "/assets/star filled.png";
+    }
+    else 
+    {
+        FavoriteBtn.src = "/assets/star.png";
+        removeFromStorage(pokemon);
+        DisplayList();
+    }
+    isFavorited = !isFavorited;
 })
 //---------------favorites setup end --------------------//
-
-
-
 
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
         searchingFromFavorites = false;
+        pokemon = userInput.value;
         updatePokemon(pokemon);
+        DisplayList();
     }
 })
 EnterBtn.addEventListener("click", () => {
-    updatePokemon(pokemon);
     searchingFromFavorites = false;
+    pokemon = userInput.value;
+    updatePokemon(pokemon);
+    favoritesCheck();
+    DisplayList();
+
 })
 
 
