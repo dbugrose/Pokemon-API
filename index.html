@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300..900&family=Fugaz+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poiret+One&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300..900&family=Fugaz+One&family=Poiret+One&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 pokemonFont d-flex justify-content-center fugaz-one-regular mt-4 mb-4">
+                <h1>Who's that Pokemon?</h1>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <input type="text" id="userInput">
+                    <button class="fugaz-one-regular EnterBtn" id="EnterBtn">Enter</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col pokemonFont fugaz-one-regular mt-4 mb-4">
+                <h1>It's <span id="pokemonName">Pikachu</span>!</h1>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="row mainDisplay">
+                <div class="innerDisplay grid1 d-flex justify-content-center align-items-center flex-column text-center">
+                    <img src="/assets/star.png" width="20px" alt="star icon" id="favoriteBtn">
+                    <h2 id="pokedexNumber">#0025</h2>
+                    <p><img src="/assets/pikachu.png" id="mainImg" alt="pikachu" width="200px"></p>
+                    <p id="form">Default Form <img src="/assets/image-removebg-preview.png" width="26px" alt="shiny icon" id="shinyBtn"></p>
+                    <p><span id="type">Electric</span> Type</p>
+
+                </div>
+                <div class="innerDisplay grid2">
+                    <h4 class="text-center">Moves:</h4>
+                    <p id="moves">mega-punch, pay-day, thunder-punch, slam, double-kick, mega-kick, headbutt, body-slam, take-down,
+                        double-edge, tail-whip, growl, surf, submission, counter, seismic-toss, strength, thunder-shock,
+                        thunderbolt, thunder-wave, thunder, dig, toxic, agility, quick-attack, rage, mimic, double-team,
+                        defense-curl, light-screen, reflect, bide, swift, skull-bash, flash, rest, substitute, thief,
+                        snore,
+                        curse, reversal, protect, sweet-kiss, mud-slap, zap-cannon, detect, endure, charm, rollout,
+                        swagger,
+                        spark, attract, sleep-talk, return, frustration, dynamic-punch, encore, iron-tail, hidden-power,
+                        rain-dance, rock-smash, uproar, facade, focus-punch, charge, helping-hand, brick-break,
+                        knock-off,
+                        endeavor, secret-power, fake-tears, signal-beam, covet, volt-tackle, calm-mind, shock-wave,
+                        natural-gift, feint, fling, magnet-rise, nasty-plot, discharge, captivate, grass-knot,
+                        charge-beam,
+                        electro-ball, round, echoed-voice, volt-switch, electroweb, wild-charge, disarming-voice,
+                        draining-kiss, play-rough, play-nice, confide, eerie-impulse, electric-terrain, nuzzle,
+                        laser-focus,
+                        rising-voltage, tera-blast, trailblaze, alluring-voice, upper-hand </p>
+                </div>
+                <div class="innerDisplay grid3">
+                    <H4 class="text-center">Locations</H4>
+                    <p id="locations">trophy-garden-area, pallet-town-area, kanto-route-2-south-towards-viridian-city,
+                        viridian-forest-area, power-plant-area, hoenn-safari-zone-sw, hoenn-safari-zone-se,
+                        kalos-route-3-area, santalune-forest-area, slateport-city-contest-hall,
+                        verdanturf-town-contest-hall, fallarbor-town-contest-hall, lilycove-city-contest-hall,
+                        alola-route-1-east, alola-route-1-west, hauoli-city-shopping-district,
+                        heahea-city-surf-association</p>
+                </div>
+                <div class="innerDisplay grid4">
+                    <H4 class="text-center">Abilities</H4>
+                    <p id="abilities">static, lightning-rod</p>
+
+                </div>
+                <div class="innerDisplay grid5">
+                    <H4 class="text-center">Evolution Line</H4>
+                    <div class="d-flex justify-content-around text-center" id="evolutionBox">
+                        <div><img src="/assets/172.png" width="100px" height="100px" id="" alt="pichu">
+                            <p>Pichu</p>
+                        </div>
+                        <div><img src="/assets/25.png" width="100px" height="100px" alt="pikachu">
+                            <p>Pikachu</p>
+                        </div>
+                        <div><img src="/assets/26.png" width="100px" height="100px" alt="raichu">
+                            <p>Raichu</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="innerDisplay grid6">
+                    <H4 class="text-center">Favorites</H4>
+                    <div id="favoritesBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="scripts/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
