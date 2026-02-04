@@ -36,6 +36,7 @@ let evolutionName;
 //-------------------main fetch function start --------------------------//
 
 async function GetAPI(pokemon) {
+
     if (!searchingFromFavorites && !searchingForPics) {
         pokemon = userInput.value;
         console.log(pokemon)
@@ -58,14 +59,6 @@ function capitalize(pokemon) {
 async function updatePokemon(pokemon) {
     if (!searchingFromFavorites && !searchingForPics) { pokemon = userInput.value; }
     await GetAPI(pokemon);
-    if (favoritePokemonList.includes(pokemon)) {
-        FavoriteBtn.src = "/assets/star filled.png";
-        isFavorited = true;
-    }
-    else {
-        FavoriteBtn.src = "/assets/star.png";
-        isFavorited = false;
-    }
     startShiny = null;
     //abilities update
     Abilities.textContent = "";
@@ -76,7 +69,6 @@ async function updatePokemon(pokemon) {
     abilitiesList = abilitiesList.join(", ");
     Abilities.textContent = abilitiesList;
 
-    //favorites update
 
     //name update
     PokemonName.textContent = capitalize(data.name);
@@ -206,9 +198,9 @@ function saveToStorage(favoritePokemon) {
     localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList))
 }
 
-const removeFromStorage = (favoritePokemon) => {
+function removeFromStorage(pokemon) {
     let favoritePokemonList = getLocalStorage();
-    let pokemonIndex = favoritePokemonList.indexOf(favoritePokemon);
+    let pokemonIndex = favoritePokemonList.indexOf(pokemon);
     favoritePokemonList.splice(pokemonIndex, 1);
 
     localStorage.setItem("Favorite Pokemon", JSON.stringify(favoritePokemonList));
@@ -218,11 +210,11 @@ function DisplayList() {
 
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
-    console.log(`favoritePokemonList: ${favoritePokemonList}`);
     favoritePokemonList.forEach((pokemon) => {
         favSpan = document.createElement("span");
         favSpan.className = "px-1";
         favSpan.textContent = pokemon;
+        favoritePokemon = favSpan.textContent;
         favSpan.addEventListener("click", () => {
             searchingFromFavorites = true;
             console.log(pokemon);
@@ -230,12 +222,13 @@ function DisplayList() {
             updatePokemon(pokemon);
         })
         const deleteBtn = document.createElement("span");
-        deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${favoritePokemon}">`;
+        deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${pokemon}">`;
         deleteBtn.classList = "px-1";
         deleteBtn.addEventListener("click", () => {
-            removeFromStorage(favoritePokemon);
-            favoritesCheck()
-            favSpan.remove();
+        FavoriteBtn.src = "/assets/star.png";
+        isFavorited = false;
+        removeFromStorage(PokemonName.textContent);
+        favSpan.remove(PokemonName.textContent);
         })
         favSpan.appendChild(deleteBtn);
         FavoritesBox.appendChild(favSpan);
@@ -244,42 +237,54 @@ function DisplayList() {
 
 
 FavoriteBtn.addEventListener("click", () => {
-favoritesCheck();
-})
+    favoritesCheck();
+    isFavorited = !isFavorited;
+    DisplayList();
+}
+)
 
-function favoritesCheck() {
-if (!isFavorited) {
-        let favoritePokemon = pokemon;
+function favoritesCheck(){
+    if (!isFavorited) {
         getLocalStorage();
-        saveToStorage(favoritePokemon);
-        DisplayList();
+        saveToStorage(PokemonName.textContent);
         FavoriteBtn.src = "/assets/star filled.png";
     }
     else {
         FavoriteBtn.src = "/assets/star.png";
-        removeFromStorage(pokemon);
-        DisplayList();
-    }
-        isFavorited = !isFavorited;
+        removeFromStorage(PokemonName.textContent);
+        favSpan.remove(PokemonName.textContent);
 
+    }
+    console.log(isFavorited);
 }
+
 //---------------favorites setup end --------------------//
 
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
+        if (!parseInt(userInput.value) || (parseInt(userInput.value) && parseInt(userInput.value) <= 649)) {
+            searchingFromFavorites = false;
+            pokemon = userInput.value;
+            updatePokemon(pokemon);
+            DisplayList();
+        }
+        else {
+            alert("Please only enter a pokedex number between 1 and 649.")
+        }
+    }
+})
+
+EnterBtn.addEventListener("click", () => {
+    if (!parseInt(userInput.value) || (parseInt(userInput.value) && parseInt(userInput.value) <= 649)) {
         searchingFromFavorites = false;
         pokemon = userInput.value;
         updatePokemon(pokemon);
+        favoritesCheck();
         DisplayList();
     }
-})
-EnterBtn.addEventListener("click", () => {
-    searchingFromFavorites = false;
-    pokemon = userInput.value;
-    updatePokemon(pokemon);
-    favoritesCheck();
-    DisplayList();
-
+    else {
+        alert("Please only enter a pokedex number between 1 and 649.")
+    }
 })
 
 
