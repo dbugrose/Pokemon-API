@@ -1,19 +1,26 @@
+
+    html {
+    min-width: 100vw;
+    min-height: 100vw;
+
+}
 body {
     background-image: url(/assets/61lqRxbsC5L._AC_UF894\,1000_QL80_.jpg);
     display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     justify-content: center;
     align-items: center;
     text-align: center;
     background-size: 100px;
-    background-color: black;
-    object-fit: cover;
-    object-position: bottom right;
     background-attachment: fixed;
-    overflow-x: hidden;
     font-family: "Montserrat", sans-serif;
     font-weight: 500;
     font-style: normal;
     background-repeat: repeat;
+    overflow-x: hidden;
+
+
 }
 
 .fugaz-one-regular {
@@ -32,8 +39,12 @@ input, button {
     border-radius: 15px;
 }
 input {
-    width: 75%;
+width: 600px;
 }
+button {
+   width: 150px;
+}
+
 .pokemonFont {
 color: #386ABB;
   -webkit-text-size-adjust: 90%;
@@ -46,6 +57,9 @@ color: #386ABB;
 
 .mainDisplay {
     width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: #386ABBaa;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -53,13 +67,14 @@ color: #386ABB;
     gap: 15px;
     border-radius: 15px;
     padding: 15px;
-    justify-content: center;
+    justify-items: center;
 
 }
 
 .innerDisplay {
     background-color: #ffffffaa;
     border-radius: 15px;
+    height: 100%;
 
 }
 
@@ -107,13 +122,22 @@ grid-row: 4;
 
 @media (max-width: 768px) {
 
+header {
+ width: 100%;
+}
+button {
+   width: 100px;
+}
 .pokemonFont {
-    scale: calc(100%);
+    scale: calc(150%);
 }
 .mainDisplay {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    width: 100%;
+    column-gap: 0px;
+    width: 90%;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .grid1{
@@ -149,5 +173,60 @@ overflow-x: scroll;
 .grid6 {
 grid-column: 1/4;
 grid-row: 5;
+}
+}
+@media (max-width: 500px) {
+
+header {
+ width: 100%;
+}
+button {
+   width: 100%;
+}
+.pokemonFont {
+    scale: calc(150%);
+}
+.mainDisplay {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    column-gap: 0px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.grid1{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.grid2 {
+grid-column: 1;
+grid-row: 2;
+overflow-y: scroll;
+}
+
+.grid3 {
+grid-column: 1;
+grid-row: 3;
+overflow-y: scroll;
+height: 250px;
+
+}
+
+.grid4 {
+grid-column: 1;
+grid-row: 4;
+}
+
+.grid5 {
+grid-column: 1;
+grid-row: 5;
+overflow-x: scroll;
+}
+
+.grid6 {
+grid-column: 1;
+grid-row: 6;
 }
 }

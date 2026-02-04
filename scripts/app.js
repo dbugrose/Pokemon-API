@@ -56,10 +56,9 @@ function capitalize(pokemon) {
 //-------------------update Pokemon function start--------------------------//
 
 async function updatePokemon(pokemon) {
-
     if (!searchingFromFavorites && !searchingForPics) { pokemon = userInput.value; }
     await GetAPI(pokemon);
-    if (favoritePokemonList.includes(favoritePokemon)) {
+    if (favoritePokemonList.includes(pokemon)) {
         FavoriteBtn.src = "/assets/star filled.png";
         isFavorited = true;
     }
@@ -78,14 +77,6 @@ async function updatePokemon(pokemon) {
     Abilities.textContent = abilitiesList;
 
     //favorites update
-    if (favoritePokemonList.includes(userInput.value)) {
-        isFavorited = true;
-        FavoriteBtn.src = "/assets/star filled.png";
-    }
-    else {
-        isFavorited = false;
-        FavoriteBtn.src = "/assets/star.png";
-    }
 
     //name update
     PokemonName.textContent = capitalize(data.name);
@@ -123,7 +114,7 @@ async function updatePokemon(pokemon) {
 
     //get evolution line
     FetchEvolutions();
-    
+
     //reset input
     userInput.value = "";
 }
@@ -159,7 +150,7 @@ async function FetchEvolutions() {
     evo2 = await response.json();
     console.log(evo2);
     evolutionNames = [];
-            evolutionNames.push(evo2.chain.species.name)
+    evolutionNames.push(evo2.chain.species.name)
 
     for (let i = 0; i < evo2.chain.evolves_to.length; i++) {
         {
@@ -178,22 +169,22 @@ async function FetchEvolutions() {
 
 //-------------------picture fetch function start --------------------------//
 
-function FetchEvolutionsPics(evolutionNames){
+function FetchEvolutionsPics(evolutionNames) {
     EvolutionBox.innerHTML = "";
     evolutionNames.forEach((evolutionName) => {
-    searchingForPics = true;
-       GetAPIPictures(evolutionName);
+        searchingForPics = true;
+        GetAPIPictures(evolutionName);
     })
 }
 
 async function GetAPIPictures(evolutionName) {
     response = await fetch(`https://pokeapi.co/api/v2/pokemon/${evolutionName}`)
     evodata = await response.json();
-       console.log(evodata.sprites.other["official-artwork"].front_default)
-       const EvoImage = document.createElement("img");
-       EvoImage.src = evodata.sprites.other["official-artwork"].front_default;
-        EvoImage.classList = "EvoImage";
-       EvolutionBox.appendChild(EvoImage);
+    console.log(evodata.sprites.other["official-artwork"].front_default)
+    const EvoImage = document.createElement("img");
+    EvoImage.src = evodata.sprites.other["official-artwork"].front_default;
+    EvoImage.classList = "EvoImage";
+    EvolutionBox.appendChild(EvoImage);
 }
 //-------------------picture fetch function end--------------------------//
 
@@ -202,6 +193,7 @@ async function GetAPIPictures(evolutionName) {
 //---------------favorites setup start --------------------//
 function getLocalStorage() {
     favoritePokemon = localStorage.getItem("Favorite Pokemon");
+
     if (favoritePokemon === null) { return [] };
     return JSON.parse(favoritePokemon);
 }
@@ -226,13 +218,15 @@ function DisplayList() {
 
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
+    console.log(`favoritePokemonList: ${favoritePokemonList}`);
     favoritePokemonList.forEach((pokemon) => {
         favSpan = document.createElement("span");
         favSpan.className = "px-1";
         favSpan.textContent = pokemon;
         favSpan.addEventListener("click", () => {
             searchingFromFavorites = true;
-            GetAPI(favSpan.textContent);
+            console.log(pokemon);
+            GetAPI(pokemon);
             updatePokemon(pokemon);
         })
         const deleteBtn = document.createElement("span");
@@ -240,8 +234,7 @@ function DisplayList() {
         deleteBtn.classList = "px-1";
         deleteBtn.addEventListener("click", () => {
             removeFromStorage(favoritePokemon);
-            FavoriteBtn.src = "/assets/star.png";
-            isFavorited = !isFavorited;
+            favoritesCheck()
             favSpan.remove();
         })
         favSpan.appendChild(deleteBtn);
@@ -251,7 +244,11 @@ function DisplayList() {
 
 
 FavoriteBtn.addEventListener("click", () => {
-    if (!isFavorited) {
+favoritesCheck();
+})
+
+function favoritesCheck() {
+if (!isFavorited) {
         let favoritePokemon = pokemon;
         getLocalStorage();
         saveToStorage(favoritePokemon);
@@ -263,11 +260,10 @@ FavoriteBtn.addEventListener("click", () => {
         removeFromStorage(pokemon);
         DisplayList();
     }
-    isFavorited = !isFavorited;
-})
-//-------------------favorites setup end--------------------------//
+        isFavorited = !isFavorited;
 
-//-------------------event listeners  start--------------------------//
+}
+//---------------favorites setup end --------------------//
 
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
