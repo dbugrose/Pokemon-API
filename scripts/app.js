@@ -41,6 +41,7 @@ async function GetAPI(pokemon) {
         pokemon = userInput.value;
         console.log(pokemon)
     }
+    favoritesCheck(pokemon);
     response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     data = await response.json();
 }
@@ -225,10 +226,11 @@ function DisplayList() {
         deleteBtn.innerHTML = `<img src="/assets/star filled.png" width="20px" alt="${pokemon}">`;
         deleteBtn.classList = "px-1";
         deleteBtn.addEventListener("click", () => {
-        FavoriteBtn.src = "/assets/star.png";
-        isFavorited = false;
-        removeFromStorage(PokemonName.textContent);
-        favSpan.remove(PokemonName.textContent);
+        pokemon = favSpan.textContent;
+        removeFromStorage(pokemon);
+        favSpan.remove(pokemon);
+        favoritesCheck(pokemon)
+
         })
         favSpan.appendChild(deleteBtn);
         FavoritesBox.appendChild(favSpan);
@@ -237,25 +239,37 @@ function DisplayList() {
 
 
 FavoriteBtn.addEventListener("click", () => {
-    favoritesCheck();
-    isFavorited = !isFavorited;
+    favoritesToggle();
     DisplayList();
 }
 )
 
-function favoritesCheck(){
+function favoritesCheck(pokemon){
+    if (favoritePokemonList.includes(pokemon))
+    {isFavorited = true;
+    FavoriteBtn.src = "/assets/star filled.png";
+    }
+    else 
+    {isFavorited = false;
+    FavoriteBtn.src = "/assets/star.png";
+    }
+}
+
+
+function favoritesToggle(){
     if (!isFavorited) {
         getLocalStorage();
-        saveToStorage(PokemonName.textContent);
+        saveToStorage(PokemonName.textContent.toLowerCase());
         FavoriteBtn.src = "/assets/star filled.png";
     }
     else {
         FavoriteBtn.src = "/assets/star.png";
-        removeFromStorage(PokemonName.textContent);
-        favSpan.remove(PokemonName.textContent);
+        removeFromStorage(PokemonName.textContent.toLowerCase());
+        favSpan.remove(PokemonName.textContent.toLowerCase());
 
     }
     console.log(isFavorited);
+    isFavorited = !isFavorited;
 }
 
 //---------------favorites setup end --------------------//
@@ -279,7 +293,7 @@ EnterBtn.addEventListener("click", () => {
         searchingFromFavorites = false;
         pokemon = userInput.value;
         updatePokemon(pokemon);
-        favoritesCheck();
+        favoritesToggle();
         DisplayList();
     }
     else {
