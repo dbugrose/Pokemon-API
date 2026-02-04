@@ -32,7 +32,7 @@ let EvoUrl;
 let evolutionNames = [];
 let evolution;
 
-//-------------------fetch function start --------------------------//
+//-------------------main fetch function start --------------------------//
 
 async function GetAPI(pokemon) {
     if (!searchingFromFavorites && !searchingForPics) {
@@ -42,7 +42,7 @@ async function GetAPI(pokemon) {
     response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     data = await response.json();
 }
-//-------------------fetch function end--------------------------//
+//-------------------main fetch function end--------------------------//
 
 //-------------------capitalize function start--------------------------//
 
@@ -159,6 +159,8 @@ async function FetchEvolutions() {
     evo2 = await response.json();
     console.log(evo2);
     evolutionNames = [];
+            evolutionNames.push(evo2.chain.species.name)
+
     for (let i = 0; i < evo2.chain.evolves_to.length; i++) {
         {
             evolutionNames.push(evo2.chain.evolves_to[i].species.name);
@@ -168,25 +170,31 @@ async function FetchEvolutions() {
                 }
             }
         }
-        evolutionNames.push(evo2.chain.species.name)
 
     }
     console.log(evolutionNames);
     FetchEvolutionsPics(evolutionNames);
 }
 
-function FetchEvolutionsPics(){
-    EvolutionBox.innerHTML = "";
-    evolutionNames.forEach((evolutionName) => {
-    searchingForPics = true;
-    pokemon = evolutionName;
-    console.log(pokemon);
-       GetAPI(pokemon);
+//-------------------picture fetch function start --------------------------//
+
+async function GetAPIPictures(evolutionName) {
+    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${evolutionName}`)
+    data = await response.json();
        console.log(data.sprites.other["official-artwork"].front_default)
        const EvoImage = document.createElement("img");
        EvoImage.src = data.sprites.other["official-artwork"].front_default;
        EvoImage.FigCaption = pokemon;
        EvolutionBox.appendChild(EvoImage);
+}
+//-------------------picture fetch function end--------------------------//
+
+
+function FetchEvolutionsPics(evolutionNames){
+    EvolutionBox.innerHTML = "";
+    evolutionNames.forEach((evolutionName) => {
+    searchingForPics = true;
+       GetAPIPictures(evolutionName);
     })
 }
 //-------------------get evolutions function end--------------------------//
