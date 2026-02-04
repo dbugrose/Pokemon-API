@@ -123,7 +123,7 @@ grid-row: 4;
 }
 
 .deleteBtn {
-    width: 30px;
+    width: 25px;
 }
 
 @media (max-width: 768px) {
