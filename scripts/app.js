@@ -31,6 +31,7 @@ let favSpan;
 let EvoUrl;
 let evolutionNames = [];
 let evolution;
+let evolutionName;
 
 //-------------------main fetch function start --------------------------//
 
@@ -56,7 +57,7 @@ function capitalize(pokemon) {
 
 async function updatePokemon(pokemon) {
 
-    // if (!searchingFromFavorites && !searchingForPics) { pokemon = userInput.value; }
+    if (!searchingFromFavorites && !searchingForPics) { pokemon = userInput.value; }
     await GetAPI(pokemon);
     if (favoritePokemonList.includes(favoritePokemon)) {
         FavoriteBtn.src = "/assets/star filled.png";
@@ -122,7 +123,6 @@ async function updatePokemon(pokemon) {
 
     //get evolution line
     FetchEvolutions();
-    FetchEvolutionsPics();
     
     //reset input
     userInput.value = "";
@@ -178,18 +178,6 @@ async function FetchEvolutions() {
 
 //-------------------picture fetch function start --------------------------//
 
-async function GetAPIPictures(evolutionName) {
-    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${evolutionName}`)
-    data = await response.json();
-       console.log(data.sprites.other["official-artwork"].front_default)
-       const EvoImage = document.createElement("img");
-       EvoImage.src = data.sprites.other["official-artwork"].front_default;
-       EvoImage.FigCaption = pokemon;
-       EvolutionBox.appendChild(EvoImage);
-}
-//-------------------picture fetch function end--------------------------//
-
-
 function FetchEvolutionsPics(evolutionNames){
     EvolutionBox.innerHTML = "";
     evolutionNames.forEach((evolutionName) => {
@@ -197,6 +185,18 @@ function FetchEvolutionsPics(evolutionNames){
        GetAPIPictures(evolutionName);
     })
 }
+
+async function GetAPIPictures(evolutionName) {
+    response = await fetch(`https://pokeapi.co/api/v2/pokemon/${evolutionName}`)
+    evodata = await response.json();
+       console.log(evodata.sprites.other["official-artwork"].front_default)
+       const EvoImage = document.createElement("img");
+       EvoImage.src = evodata.sprites.other["official-artwork"].front_default;
+       EvoImage.FigCaption = pokemon;
+       EvolutionBox.appendChild(EvoImage);
+}
+//-------------------picture fetch function end--------------------------//
+
 //-------------------get evolutions function end--------------------------//
 
 //---------------favorites setup start --------------------//
@@ -272,6 +272,7 @@ FavoriteBtn.addEventListener("click", () => {
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
         searchingFromFavorites = false;
+        pokemon = userInput.value;
         updatePokemon(pokemon);
         DisplayList();
     }
