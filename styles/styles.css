@@ -60,6 +60,16 @@ color: #386ABB;
 .innerDisplay {
     background-color: #ffffffaa;
     border-radius: 15px;
+
+}
+
+.evolutionBox {
+overflow-x: scroll;
+}
+
+.EvoImage {
+    width: 200px;
+    height: 200px;
 }
 
 .grid1{

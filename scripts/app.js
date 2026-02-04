@@ -192,7 +192,7 @@ async function GetAPIPictures(evolutionName) {
        console.log(evodata.sprites.other["official-artwork"].front_default)
        const EvoImage = document.createElement("img");
        EvoImage.src = evodata.sprites.other["official-artwork"].front_default;
-       EvoImage.FigCaption = pokemon;
+        EvoImage.classList = "EvoImage";
        EvolutionBox.appendChild(EvoImage);
 }
 //-------------------picture fetch function end--------------------------//
