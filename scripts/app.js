@@ -34,16 +34,19 @@ let evolution;
 let evolutionName;
 let index;
 let outerListenerActive = true;
+let rnd = false;
 //-------------------main fetch function start --------------------------//
 
 async function GetAPI(pokemon) {
 
-    if (!searchingFromFavorites && !searchingForPics) { pokemon = userInput.value; }
+    if (!searchingFromFavorites && !searchingForPics && !rnd) { pokemon = userInput.value; }
     if (favoritePokemonList.includes(userInput.value)) { isFavorited = true }
     else { isFavorited = false }
     favoritesCheck();
+    if (rnd == true) { pokemon = (Math.floor(Math.random() * 650)).toString(); }
     response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
     data = await response.json();
+    console.log(data);
 }
 //-------------------main fetch function end--------------------------//
 
@@ -109,6 +112,7 @@ async function updatePokemon(pokemon) {
 
 
     //get evolution line
+
     FetchEvolutions();
 
     //reset input
@@ -137,6 +141,7 @@ async function GetLocations() {
 //-------------------get evolutions function start--------------------------//
 async function FetchEvolutionsUrl() {
     response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${data.id}`);
+    console.log(`https://pokeapi.co/api/v2/pokemon-species/${data.id}`)
     evo = await response.json();
     EvoUrl = evo.evolution_chain.url;
 }
@@ -206,7 +211,9 @@ function removeFromStorage(index) {
 }
 
 function DisplayList() {
-
+    if (rnd == true) {
+    pokemon = PokemonName.textContent;
+    }
     favoritePokemonList = getLocalStorage();
     FavoritesBox.innerHTML = "";
     favoritePokemonList.forEach((pokemon, index) => {
@@ -220,23 +227,25 @@ function DisplayList() {
                 isFavorited = true;
                 GetAPI(pokemon);
                 updatePokemon(pokemon);
-            }})
-    
+            }
+        })
+
         const deleteBtn = document.createElement("img");
-    deleteBtn.src = "/assets/star filled.png";
-    deleteBtn.classList = "px-1 deleteBtn";
-    deleteBtn.addEventListener("click", (event) => {
-        removeFromStorage(index);
-        favoritesCheck();
-        DisplayList()
-        outerListenerActive = false;
+        deleteBtn.src = "/assets/star filled.png";
+        deleteBtn.classList = "px-1 deleteBtn";
+        deleteBtn.addEventListener("click", (event) => {
+            isFavorited = false;
+            removeFromStorage(index);
+            favoritesCheck();
+            DisplayList()
+            outerListenerActive = false;
+        })
+
+        favSpan.appendChild(deleteBtn);
+        FavoritesBox.appendChild(favSpan);
     })
-
-    favSpan.appendChild(deleteBtn);
-    FavoritesBox.appendChild(favSpan);
-})
-
-    }
+rnd = false;
+}
 
 
 
@@ -244,6 +253,8 @@ function DisplayList() {
 FavoriteBtn.addEventListener("click", () => {
     favoritesToggle();
     DisplayList();
+
+
 }
 )
 
@@ -278,6 +289,15 @@ function favoritesToggle() {
 }
 
 //---------------favorites setup end --------------------//
+
+RandomizeBtn.addEventListener("click", () => {
+    rnd = true;
+    searchingFromFavorites = false;
+    console.log(pokemon);
+    favoritesCheck();
+    updatePokemon(pokemon);
+    DisplayList();
+})
 
 userInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
